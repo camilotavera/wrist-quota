@@ -1,3 +1,4 @@
+(:glance)
 module FixtureData {
     function make() {
         return {

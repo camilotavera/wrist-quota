@@ -18,7 +18,7 @@ class UsageClient {
         }
 
         var endpoint = Application.Properties.getValue("usageEndpoint");
-        if (!(endpoint instanceof Lang.String) || endpoint.size() == 0) {
+        if (!(endpoint instanceof Lang.String) || endpoint.length() == 0) {
             _callback.invoke(null, "Configure endpoint");
             return;
         }
@@ -27,7 +27,7 @@ class UsageClient {
             "Accept" => "application/json"
         };
         var token = Application.Properties.getValue("accessToken");
-        if (token instanceof Lang.String && token.size() > 0) {
+        if (token instanceof Lang.String && token.length() > 0) {
             headers["Authorization"] = "Bearer " + token;
         }
 
@@ -40,7 +40,7 @@ class UsageClient {
         Communications.makeWebRequest(endpoint, null, options, method(:onResponse));
     }
 
-    function onResponse(responseCode, data) {
+    function onResponse(responseCode as Number, data as Dictionary or String or Null) as Void {
         if (responseCode == 200 && data instanceof Lang.Dictionary) {
             _callback.invoke(data, null);
             return;
