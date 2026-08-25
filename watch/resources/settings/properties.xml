@@ -1,0 +1,5 @@
+<properties>
+    <property id="usageEndpoint" type="string"></property>
+    <property id="accessToken" type="string"></property>
+    <property id="demoMode" type="boolean">true</property>
+</properties>

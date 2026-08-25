@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-usage.local/schema/usage.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["updatedAt", "providers"],
+  "properties": {
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "providers": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["codex", "claude"],
+      "properties": {
+        "codex": { "$ref": "#/$defs/provider" },
+        "claude": { "$ref": "#/$defs/provider" }
+      }
+    }
+  },
+  "$defs": {
+    "limit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "usedPercent", "resetLabel"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "label": { "type": "string", "minLength": 1 },
+        "usedPercent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "resetLabel": { "type": "string", "minLength": 1 }
+      }
+    },
+    "headline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label", "usedPercent", "resetLabel"],
+      "properties": {
+        "label": { "type": "string", "minLength": 1 },
+        "usedPercent": { "type": "number", "minimum": 0, "maximum": 100 },
+        "resetLabel": { "type": "string", "minLength": 1 }
+      }
+    },
+    "provider": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headline", "limits"],
+      "properties": {
+        "headline": { "$ref": "#/$defs/headline" },
+        "limits": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/limit" }
+        }
+      }
+    }
+  }
+}

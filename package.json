@@ -1,0 +1,8 @@
+{
+  "name": "garmin-ai-usage",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/validate-fixture.mjs"
+  }
+}

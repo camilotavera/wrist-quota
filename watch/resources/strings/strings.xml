@@ -1,0 +1,8 @@
+<strings>
+    <string id="AppName">AI Usage</string>
+    <string id="UsageEndpointTitle" scope="settings">Usage endpoint</string>
+    <string id="UsageEndpointPrompt" scope="settings">Private HTTPS endpoint returning normalized usage JSON</string>
+    <string id="AccessTokenTitle" scope="settings">Access token</string>
+    <string id="AccessTokenPrompt" scope="settings">Bearer token for the usage endpoint</string>
+    <string id="DemoModeTitle" scope="settings">Demo mode</string>
+</strings>

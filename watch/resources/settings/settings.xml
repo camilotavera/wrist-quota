@@ -1,0 +1,11 @@
+<settings>
+    <setting propertyKey="@Properties.usageEndpoint" title="@Strings.UsageEndpointTitle" prompt="@Strings.UsageEndpointPrompt">
+        <settingConfig type="url" required="false" />
+    </setting>
+    <setting propertyKey="@Properties.accessToken" title="@Strings.AccessTokenTitle" prompt="@Strings.AccessTokenPrompt">
+        <settingConfig type="password" required="false" />
+    </setting>
+    <setting propertyKey="@Properties.demoMode" title="@Strings.DemoModeTitle">
+        <settingConfig type="boolean" />
+    </setting>
+</settings>
