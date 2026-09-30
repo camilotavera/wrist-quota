@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Usage · Circular accounts</title>
+<style>
+  *{box-sizing:border-box}body{margin:0;padding:32px;background:#121415;color:#f8f9fb;font:16px Arial,sans-serif}main{max-width:1040px;margin:auto}h1{font-size:28px;margin:0 0 12px}p{line-height:1.5;margin:0 0 28px;color:#a3a9b3}.options{display:grid;grid-template-columns:1fr 1fr;gap:24px}h2{font-size:21px;margin:0 0 10px}.watch{max-width:390px;margin:24px auto;aspect-ratio:1;border-radius:50%;overflow:hidden;background:#050608;border:2px solid #53585d}svg{width:100%;height:100%;display:block}text{fill:#f8f9fb;font-family:Arial,sans-serif}.muted{fill:#a3a9b3}.green{fill:#57e3a2}.orange{fill:#e98656}.track{fill:none;stroke:#252930;stroke-width:8}.ring{fill:none;stroke-width:8;transform:rotate(-90deg);transform-origin:center;transform-box:fill-box}.codex{stroke:#57e3a2}.claude{stroke:#e98656}.label{font-size:17px}.value{font-size:40px;font-weight:600}.small{font-size:14px}.rule{stroke:#30343c}@media(max-width:480px){.options{grid-template-columns:1fr}body{padding:20px}}
+</style>
+<main>
+<h1>Circular layouts for multiple accounts</h1>
+<p>Demo values. Two accounts per page. Tap an account for its limits; swipe for more accounts.</p>
+<div class="options">
+<article><h2>A · Paired rings</h2><p>One circle per account.</p>
+<div class="watch"><svg viewBox="0 0 390 390" role="img" aria-label="Paired account rings: Codex work 64 percent, Codex personal 19 percent, page one of two">
+<text x="195" y="61" class="small muted" text-anchor="middle">ACCOUNTS · 1 / 2</text>
+<text x="119" y="103" class="label green" text-anchor="middle">Codex</text><text x="271" y="103" class="label green" text-anchor="middle">Codex</text>
+<circle cx="119" cy="184" r="57" class="track"/><circle cx="119" cy="184" r="57" class="ring codex" stroke-dasharray="229 358"/>
+<circle cx="271" cy="184" r="57" class="track"/><circle cx="271" cy="184" r="57" class="ring codex" stroke-dasharray="68 358"/>
+<text x="119" y="198" class="value" text-anchor="middle">64<tspan font-size="21">%</tspan></text><text x="271" y="198" class="value" text-anchor="middle">19<tspan font-size="21">%</tspan></text>
+<text x="119" y="271" class="label" text-anchor="middle">Work</text><text x="271" y="271" class="label" text-anchor="middle">Personal</text>
+<text x="119" y="295" class="small muted" text-anchor="middle">Resets in 2h 14m</text><text x="271" y="295" class="small muted" text-anchor="middle">Resets in 45m</text>
+<text x="195" y="340" class="small muted" text-anchor="middle">DEMO · Refresh</text>
+</svg></div>
+<div class="watch"><svg viewBox="0 0 390 390" role="img" aria-label="Second paired ring page: Claude work 38 percent, Claude personal 81 percent">
+<text x="195" y="61" class="small muted" text-anchor="middle">ACCOUNTS · 2 / 2</text>
+<text x="119" y="103" class="label orange" text-anchor="middle">Claude</text><text x="271" y="103" class="label orange" text-anchor="middle">Claude</text>
+<circle cx="119" cy="184" r="57" class="track"/><circle cx="119" cy="184" r="57" class="ring claude" stroke-dasharray="136 358"/>
+<circle cx="271" cy="184" r="57" class="track"/><circle cx="271" cy="184" r="57" class="ring claude" stroke-dasharray="290 358"/>
+<text x="119" y="198" class="value" text-anchor="middle">38<tspan font-size="21">%</tspan></text><text x="271" y="198" class="value" text-anchor="middle">81<tspan font-size="21">%</tspan></text>
+<text x="119" y="271" class="label" text-anchor="middle">Work</text><text x="271" y="271" class="label" text-anchor="middle">Personal</text>
+<text x="119" y="295" class="small muted" text-anchor="middle">Resets in 7m</text><text x="271" y="295" class="small muted" text-anchor="middle">Resets in 1h 20m</text>
+<text x="195" y="340" class="small muted" text-anchor="middle">DEMO · Refresh</text>
+</svg></div>
+</article>
+<article><h2>C · Concentric rings</h2><p>Outer ring is the top account; inner ring is the bottom account.</p>
+<div class="watch"><svg viewBox="0 0 390 390" role="img" aria-label="Concentric account rings: Codex work 64 percent, Codex personal 19 percent, page one of two">
+<circle cx="195" cy="195" r="151" class="track"/><circle cx="195" cy="195" r="151" class="ring codex" stroke-dasharray="607 949"/>
+<circle cx="195" cy="195" r="134" class="track"/><circle cx="195" cy="195" r="134" class="ring codex" stroke-dasharray="160 842"/>
+<text x="195" y="109" class="small muted" text-anchor="middle">ACCOUNTS · 1 / 2</text>
+<text x="105" y="144" class="small green">Codex · Work</text><text x="285" y="183" class="value" text-anchor="end">64<tspan font-size="21">%</tspan></text><text x="105" y="181" class="small muted">2h 14m</text>
+<path d="M105 199H285" class="rule"/>
+<text x="105" y="230" class="small green">Codex · Personal</text><text x="285" y="267" class="value" text-anchor="end">19<tspan font-size="21">%</tspan></text><text x="105" y="265" class="small muted">45m</text>
+<text x="195" y="302" class="small muted" text-anchor="middle">DEMO · Refresh</text>
+</svg></div>
+<div class="watch"><svg viewBox="0 0 390 390" role="img" aria-label="Second concentric ring page: Claude work 38 percent, Claude personal 81 percent">
+<circle cx="195" cy="195" r="151" class="track"/><circle cx="195" cy="195" r="151" class="ring claude" stroke-dasharray="361 949"/>
+<circle cx="195" cy="195" r="134" class="track"/><circle cx="195" cy="195" r="134" class="ring claude" stroke-dasharray="682 842"/>
+<text x="195" y="109" class="small muted" text-anchor="middle">ACCOUNTS · 2 / 2</text>
+<text x="105" y="144" class="small orange">Claude · Work</text><text x="285" y="183" class="value" text-anchor="end">38<tspan font-size="21">%</tspan></text><text x="105" y="181" class="small muted">7m</text>
+<path d="M105 199H285" class="rule"/>
+<text x="105" y="230" class="small orange">Claude · Personal</text><text x="285" y="267" class="value" text-anchor="end">81<tspan font-size="21">%</tspan></text><text x="105" y="265" class="small muted">1h 20m</text>
+<text x="195" y="302" class="small muted" text-anchor="middle">DEMO · Refresh</text>
+</svg></div>
+</article>
+</div>
+</main>
+</html>

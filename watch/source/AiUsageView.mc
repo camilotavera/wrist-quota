@@ -4,6 +4,8 @@ import Toybox.Time;
 import Toybox.WatchUi;
 
 class AiUsageView extends WatchUi.View {
+    const ACCOUNTS_PER_PAGE = 2;
+
     private var _client;
     private var _data;
     private var _error;
@@ -96,8 +98,8 @@ class AiUsageView extends WatchUi.View {
 
     function showAccount(row) {
         var rows = UsageData.accounts(_data);
-        var index = _accountPage * 4 + row;
-        if (index < 0 || index >= rows.size()) {
+        var index = _accountPage * ACCOUNTS_PER_PAGE + row;
+        if (row < 0 || row >= ACCOUNTS_PER_PAGE || index >= rows.size()) {
             return false;
         }
         _accountId = rows[index]["id"];
@@ -117,7 +119,7 @@ class AiUsageView extends WatchUi.View {
     function changePage(direction) {
         var count = isOverview() ? UsageData.accounts(_data).size()
             : UsageData.limits(UsageData.account(_data, _accountId)).size();
-        var size = isOverview() ? 4 : 3;
+        var size = isOverview() ? ACCOUNTS_PER_PAGE : 3;
         var current = isOverview() ? _accountPage : _limitPage;
         var next = current + direction;
         if (next < 0 || next * size >= count) {
@@ -133,7 +135,7 @@ class AiUsageView extends WatchUi.View {
     }
 
     private function clampPages() {
-        if (_accountPage * 4 >= UsageData.accounts(_data).size()) {
+        if (_accountPage * ACCOUNTS_PER_PAGE >= UsageData.accounts(_data).size()) {
             _accountPage = 0;
         }
         if (_limitPage * 3 >= UsageData.limits(UsageData.account(_data, _accountId)).size()) {
@@ -164,30 +166,48 @@ class AiUsageView extends WatchUi.View {
     private function drawOverview(dc) {
         var rows = UsageData.accounts(_data);
         dc.setColor(Theme.FOREGROUND, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(195, 53, Graphics.FONT_SMALL, "ACCOUNTS", Graphics.TEXT_JUSTIFY_CENTER);
-        drawPage(dc, _accountPage, rows.size(), 4);
+        var title = "ACCOUNTS";
+        if (rows.size() > ACCOUNTS_PER_PAGE) {
+            title += " · " + (_accountPage + 1).format("%d") + "/"
+                + ((rows.size() + ACCOUNTS_PER_PAGE - 1) / ACCOUNTS_PER_PAGE).toNumber().format("%d");
+        }
+        dc.drawText(195, 48, Graphics.FONT_XTINY, title, Graphics.TEXT_JUSTIFY_CENTER);
         if (rows.size() == 0) {
             drawStatus(dc, "No accounts");
         }
-        var end = (_accountPage + 1) * 4;
+        var end = (_accountPage + 1) * ACCOUNTS_PER_PAGE;
         if (end > rows.size()) {
             end = rows.size();
         }
-        for (var index = _accountPage * 4; index < end; index += 1) {
-            var account = rows[index];
-            var top = 92 + (index % 4) * 61;
-            dc.setColor(colorForAccount(account), Graphics.COLOR_TRANSPARENT);
-            drawFitted(dc, 63, top, Graphics.FONT_XTINY, accountTitle(account), 185, Graphics.TEXT_JUSTIFY_LEFT);
-            dc.setColor(Theme.FOREGROUND, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(327, top - 4, Graphics.FONT_SMALL, UsageData.percentText(UsageData.headline(account)), Graphics.TEXT_JUSTIFY_RIGHT);
-            dc.setColor(Theme.MUTED, Graphics.COLOR_TRANSPARENT);
-            drawFitted(dc, 63, top + 24, Graphics.FONT_XTINY, accountStatus(account), 264, Graphics.TEXT_JUSTIFY_LEFT);
-            if (index + 1 < end) {
-                dc.setColor(Theme.DIVIDER, Graphics.COLOR_TRANSPARENT);
-                dc.drawLine(63, top + 52, 327, top + 52);
-            }
+        for (var index = _accountPage * ACCOUNTS_PER_PAGE; index < end; index += 1) {
+            drawAccount(dc, rows[index], 119 + (index % ACCOUNTS_PER_PAGE) * 152);
         }
         drawFooter(dc, _loading ? "Updating..." : (_demo ? "DEMO | Refresh" : (_error != null ? "Saved | Retry" : "Refresh")));
+    }
+
+    private function drawAccount(dc, account, x) {
+        var headline = UsageData.headline(account);
+        var percent = UsageData.percent(headline);
+        dc.setColor(colorForAccount(account), Graphics.COLOR_TRANSPARENT);
+        dc.drawText(x, 86, Graphics.FONT_XTINY, account["provider"].equals("codex") ? "Codex" : "Claude", Graphics.TEXT_JUSTIFY_CENTER);
+        dc.setPenWidth(8);
+        dc.setColor(Theme.TRACK, Graphics.COLOR_TRANSPARENT);
+        dc.drawCircle(x, 184, 57);
+        // Equal arc angles draw a full circle, so zero must skip the usage arc.
+        if (percent != null && percent > 0) {
+            dc.setColor(colorForAccount(account), Graphics.COLOR_TRANSPARENT);
+            dc.drawArc(x, 184, 57, Graphics.ARC_CLOCKWISE, 90, (450 - (360 * percent / 100)) % 360);
+        }
+        dc.setPenWidth(1);
+        dc.setColor(Theme.FOREGROUND, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(x, 184, Graphics.FONT_MEDIUM, UsageData.percentText(headline), Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER);
+        drawFitted(dc, x, 253, Graphics.FONT_XTINY, account["name"], 136, Graphics.TEXT_JUSTIFY_CENTER);
+        dc.setColor(Theme.MUTED, Graphics.COLOR_TRANSPARENT);
+        var status = accountStatus(account);
+        if (status.find("resets ") == 0) {
+            status = status.substring(7, status.length());
+        }
+        drawFitted(dc, x, 280, Graphics.FONT_XTINY, status, 136, Graphics.TEXT_JUSTIFY_CENTER);
     }
 
     private function drawDetails(dc, account) {
@@ -209,7 +229,7 @@ class AiUsageView extends WatchUi.View {
         for (var index = _limitPage * 3; index < end; index += 1) {
             drawLimit(dc, limits[index], firstY + (index % 3) * rowHeight, account);
         }
-        var status = _demo ? "DEMO" : (_cached || account["status"] == "unavailable" ? "Saved " : "Updated ") + UsageData.ageLabel(account, Time.now().value());
+        var status = _demo ? "DEMO" : (_cached || account["status"].equals("unavailable") ? "Saved " : "Updated ") + UsageData.ageLabel(account, Time.now().value());
         drawFooter(dc, _loading ? "Updating..." : status + " | Refresh");
     }
 
@@ -221,7 +241,7 @@ class AiUsageView extends WatchUi.View {
         drawFitted(dc, 72, top + 26, Graphics.FONT_XTINY, limit["resetLabel"], 246, Graphics.TEXT_JUSTIFY_LEFT);
         dc.setColor(Theme.TRACK, Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(72, top + 51, 246, 6);
-        dc.setColor(limit["id"] == "fable" ? Theme.FABLE : colorForAccount(account), Graphics.COLOR_TRANSPARENT);
+        dc.setColor(limit["id"].equals("fable") ? Theme.FABLE : colorForAccount(account), Graphics.COLOR_TRANSPARENT);
         dc.fillRectangle(72, top + 51, (246 * UsageData.percent(limit)) / 100, 6);
     }
 
@@ -233,7 +253,7 @@ class AiUsageView extends WatchUi.View {
     private function drawPage(dc, page, count, size) {
         if (count > size) {
             dc.setColor(Theme.MUTED, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(isOverview() ? 300 : 195, isOverview() ? 57 : 82, Graphics.FONT_XTINY, (page + 1).format("%d") + "/" + ((count + size - 1) / size).toNumber().format("%d"), Graphics.TEXT_JUSTIFY_CENTER);
+            dc.drawText(195, 82, Graphics.FONT_XTINY, (page + 1).format("%d") + "/" + ((count + size - 1) / size).toNumber().format("%d"), Graphics.TEXT_JUSTIFY_CENTER);
         }
     }
 
@@ -248,18 +268,18 @@ class AiUsageView extends WatchUi.View {
     }
 
     private function accountTitle(account) {
-        return (account["provider"] == "codex" ? "Codex" : "Claude") + " · " + account["name"];
+        return (account["provider"].equals("codex") ? "Codex" : "Claude") + " · " + account["name"];
     }
 
     private function colorForAccount(account) {
-        return account["provider"] == "codex" ? Theme.CODEX : Theme.CLAUDE;
+        return account["provider"].equals("codex") ? Theme.CODEX : Theme.CLAUDE;
     }
 
     private function accountStatus(account) {
         if (UsageData.headline(account) == null) {
             return "Unavailable";
         }
-        if (!_demo && (_cached || account["status"] == "unavailable")) {
+        if (!_demo && (_cached || account["status"].equals("unavailable"))) {
             return "Saved " + UsageData.ageLabel(account, Time.now().value());
         }
         return UsageData.text(UsageData.headline(account), "resetLabel", "reset unknown");

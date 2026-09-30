@@ -14,8 +14,8 @@ module UsageData {
             var provider = text(account, "provider", "");
             var status = text(account, "status", "");
             if (id.length() == 0 || ids.hasKey(id) || text(account, "name", "").length() == 0
-                || (provider != "codex" && provider != "claude")
-                || (status != "ready" && status != "unavailable")) {
+                || (!provider.equals("codex") && !provider.equals("claude"))
+                || (!status.equals("ready") && !status.equals("unavailable"))) {
                 return false;
             }
             ids[id] = true;
@@ -24,7 +24,7 @@ module UsageData {
             }
             var limits = account["limits"];
             if (account["headline"] == null) {
-                if (status != "unavailable" || account["updatedAt"] != null || limits.size() != 0) {
+                if (!status.equals("unavailable") || account["updatedAt"] != null || limits.size() != 0) {
                     return false;
                 }
                 continue;
@@ -70,7 +70,7 @@ module UsageData {
     function account(data, id) {
         var rows = accounts(data);
         for (var index = 0; index < rows.size(); index += 1) {
-            if (text(rows[index], "id", "") == id) {
+            if (text(rows[index], "id", "").equals(id)) {
                 return rows[index];
             }
         }
@@ -98,8 +98,8 @@ module UsageData {
         for (var index = 0; index < rows.size(); index += 1) {
             var row = rows[index];
             var saved = account(cached, row["id"]);
-            if (row["status"] == "unavailable" && headline(row) == null
-                && saved != null && saved["provider"] == row["provider"] && headline(saved) != null) {
+            if (row["status"].equals("unavailable") && headline(row) == null
+                && saved != null && saved["provider"].equals(row["provider"]) && headline(saved) != null) {
                 row["headline"] = saved["headline"];
                 row["limits"] = saved["limits"];
                 row["updatedAt"] = saved["updatedAt"];

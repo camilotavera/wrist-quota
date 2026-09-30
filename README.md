@@ -4,8 +4,8 @@ A private Connect IQ watch app for viewing multiple Codex and Claude accounts on
 
 ## Watch behavior
 
-- Four accounts per overview page, with separate usage percentages and reset labels.
-- Tap an account to inspect its limits. Swipe up/left for the next page and down/right for the previous page. Details show three limits per page; none are silently discarded.
+- Two accounts per overview page, each with a circular usage ring, provider, account name, and reset label. Unknown usage shows an empty track and `--`.
+- Tap either account ring to inspect its limits. Swipe up/left for the next page and down/right for the previous page. Details show three limits per page; none are silently discarded.
 - Tap the footer to refresh. Press Back or tap ‹ to return to the account list.
 - Saved live data appears immediately on launch. Request failures preserve it and show saved-data labels. An unavailable account can retain its own cached usage while healthy accounts update.
 - The glance shows the last selected live account, falling back to the first account, and labels its values as saved. Demo mode never overwrites live data or the live-account selection.

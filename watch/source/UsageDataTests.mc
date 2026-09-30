@@ -12,6 +12,16 @@ function acceptsAccountsAndDecimalUsage(logger) {
 }
 
 (:test)
+function findsAccountByIdValueRatherThanStringReference(logger) {
+    var data = FixtureData.make();
+    var id = "prefix:codex-personal".substring(7, 21);
+    var account = UsageData.account(data, id);
+    Test.assert(account != null);
+    Test.assertEqual(account["name"], "Personal");
+    return true;
+}
+
+(:test)
 function rejectsMalformedUsage(logger) {
     var values = [null, "64", -1, 101];
     for (var index = 0; index < values.size(); index += 1) {
@@ -63,11 +73,11 @@ function doesNotRestoreRemovedAccountsOrBorrowOtherAccountUsage(logger) {
     var data = {"accounts" => [{"id" => "new", "name" => "New", "provider" => "codex", "status" => "unavailable", "updatedAt" => null, "headline" => null, "limits" => []}]};
     var merged = UsageData.merge(data, saved);
     Test.assert(UsageData.isValid(merged));
-    Test.assertEqual(UsageData.headline(merged["accounts"][0]), null);
+    Test.assert(UsageData.headline(merged["accounts"][0]) == null);
     Test.assertEqual(UsageData.account(saved, "codex-personal")["name"], "Personal");
     data["accounts"][0]["id"] = "codex-work";
     data["accounts"][0]["provider"] = "claude";
-    Test.assertEqual(UsageData.headline(UsageData.merge(data, saved)["accounts"][0]), null);
+    Test.assert(UsageData.headline(UsageData.merge(data, saved)["accounts"][0]) == null);
     return true;
 }
 

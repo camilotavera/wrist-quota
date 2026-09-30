@@ -24,7 +24,7 @@ class AiUsageGlanceView extends WatchUi.GlanceView {
         }
         dc.drawText(6, 4, Graphics.FONT_XTINY, title, Graphics.TEXT_JUSTIFY_LEFT);
         var valueY = dc.getHeight() - dc.getFontHeight(Graphics.FONT_SMALL) - 4;
-        dc.setColor(selected != null && selected["provider"] == "claude" ? Theme.CLAUDE : Theme.CODEX, Graphics.COLOR_TRANSPARENT);
+        dc.setColor(selected != null && selected["provider"].equals("claude") ? Theme.CLAUDE : Theme.CODEX, Graphics.COLOR_TRANSPARENT);
         dc.drawText(6, valueY, Graphics.FONT_SMALL, UsageData.percentText(UsageData.headline(selected)), Graphics.TEXT_JUSTIFY_LEFT);
         dc.setColor(Theme.MUTED, Graphics.COLOR_TRANSPARENT);
         dc.drawText(dc.getWidth() - 6, valueY + 5, Graphics.FONT_XTINY, demo ? "DEMO" : (selected == null ? "NO DATA" : "SAVED"), Graphics.TEXT_JUSTIFY_RIGHT);

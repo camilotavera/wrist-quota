@@ -15,8 +15,8 @@ class AiUsageDelegate extends WatchUi.BehaviorDelegate {
             return true;
         }
         if (_view.isOverview()) {
-            if (coordinates[0] >= 63 && coordinates[0] <= 327 && coordinates[1] >= 88 && coordinates[1] < 326) {
-                return _view.showAccount(((coordinates[1] - 88) / 61).toNumber());
+            if (coordinates[0] >= 58 && coordinates[0] <= 332 && coordinates[1] >= 86 && coordinates[1] < 316) {
+                return _view.showAccount(coordinates[0] < 195 ? 0 : 1);
             }
             return false;
         }
