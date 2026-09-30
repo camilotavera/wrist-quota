@@ -10,16 +10,19 @@ class UsageClient {
     }
 
     function fetch(callback) {
+        if (_callback != null) {
+            return;
+        }
         _callback = callback;
 
         if (Application.Properties.getValue("demoMode") == true) {
-            _callback.invoke(FixtureData.make(), null);
+            complete(FixtureData.make(), null);
             return;
         }
 
         var endpoint = Application.Properties.getValue("usageEndpoint");
-        if (!(endpoint instanceof Lang.String) || endpoint.length() == 0) {
-            _callback.invoke(null, "Configure endpoint");
+        if (!(endpoint instanceof Lang.String) || endpoint.find("https://") != 0) {
+            complete(null, "Configure HTTPS endpoint");
             return;
         }
 
@@ -41,11 +44,24 @@ class UsageClient {
     }
 
     function onResponse(responseCode as Number, data as Dictionary or String or Null) as Void {
-        if (responseCode == 200 && data instanceof Lang.Dictionary) {
-            _callback.invoke(data, null);
+        if (_callback == null) {
+            return;
+        }
+        if (responseCode == 200) {
+            if (UsageData.isValid(data)) {
+                complete(data, null);
+            } else {
+                complete(null, "Invalid usage data");
+            }
             return;
         }
 
-        _callback.invoke(null, "Request failed " + responseCode.format("%d"));
+        complete(null, "Request failed " + responseCode.format("%d"));
+    }
+
+    private function complete(data, error) {
+        var callback = _callback;
+        _callback = null;
+        callback.invoke(data, error);
     }
 }

@@ -3,20 +3,11 @@
   "$id": "https://ai-usage.local/schema/usage.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["updatedAt", "providers"],
+  "required": ["accounts"],
   "properties": {
-    "updatedAt": {
-      "type": "string",
-      "format": "date-time"
-    },
-    "providers": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["codex", "claude"],
-      "properties": {
-        "codex": { "$ref": "#/$defs/provider" },
-        "claude": { "$ref": "#/$defs/provider" }
-      }
+    "accounts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/account" }
     }
   },
   "$defs": {
@@ -41,18 +32,36 @@
         "resetLabel": { "type": "string", "minLength": 1 }
       }
     },
-    "provider": {
+    "account": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["headline", "limits"],
+      "required": ["id", "name", "provider", "status", "updatedAt", "headline", "limits"],
       "properties": {
-        "headline": { "$ref": "#/$defs/headline" },
-        "limits": {
-          "type": "array",
-          "minItems": 1,
-          "items": { "$ref": "#/$defs/limit" }
+        "id": { "type": "string", "minLength": 1 },
+        "name": { "type": "string", "minLength": 1 },
+        "provider": { "enum": ["codex", "claude"] },
+        "status": { "enum": ["ready", "unavailable"] },
+        "updatedAt": { "type": ["integer", "null"], "minimum": 0 },
+        "headline": { "anyOf": [{ "$ref": "#/$defs/headline" }, { "type": "null" }] },
+        "limits": { "type": "array", "items": { "$ref": "#/$defs/limit" } }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "updatedAt": { "type": "integer" },
+            "headline": { "$ref": "#/$defs/headline" },
+            "limits": { "type": "array", "minItems": 1 }
+          }
+        },
+        {
+          "properties": {
+            "status": { "const": "unavailable" },
+            "updatedAt": { "type": "null" },
+            "headline": { "type": "null" },
+            "limits": { "type": "array", "maxItems": 0 }
+          }
         }
-      }
+      ]
     }
   }
 }

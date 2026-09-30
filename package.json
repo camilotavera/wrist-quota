@@ -3,6 +3,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node scripts/validate-fixture.mjs"
+    "fixture:generate": "node scripts/generate-fixture.mjs",
+    "test": "node scripts/validate-fixture.mjs && node scripts/generate-fixture.mjs --check && node --test scripts/usage-contract.test.mjs"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
   }
 }
